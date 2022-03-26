@@ -1,0 +1,9 @@
+/home/maksim/Myfolder/Magistr/Service/11/Serv1/build/CMakeFiles/install/strip.dir
+/home/maksim/Myfolder/Magistr/Service/11/Serv1/build/CMakeFiles/install/local.dir
+/home/maksim/Myfolder/Magistr/Service/11/Serv1/build/CMakeFiles/edit_cache.dir
+/home/maksim/Myfolder/Magistr/Service/11/Serv1/build/CMakeFiles/package_source.dir
+/home/maksim/Myfolder/Magistr/Service/11/Serv1/build/CMakeFiles/install.dir
+/home/maksim/Myfolder/Magistr/Service/11/Serv1/build/CMakeFiles/list_install_components.dir
+/home/maksim/Myfolder/Magistr/Service/11/Serv1/build/CMakeFiles/rebuild_cache.dir
+/home/maksim/Myfolder/Magistr/Service/11/Serv1/build/CMakeFiles/package.dir
+/home/maksim/Myfolder/Magistr/Service/11/Serv1/build/CMakeFiles/SERV1.dir

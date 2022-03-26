@@ -1,0 +1,40 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/maksim/Myfolder/Magistr/Service/11/Serv1/src/Database/person.cpp
+person.h
+/home/maksim/Myfolder/Magistr/Service/11/Serv1/src/Database/person.h
+string.h
+/home/maksim/Myfolder/Magistr/Service/11/Serv1/src/Database/string.h
+../debug/debug.h
+/home/maksim/Myfolder/Magistr/Service/11/Serv1/src/debug/debug.h
+Poco/Data/Statement.h
+/home/maksim/Myfolder/Magistr/Service/11/Serv1/src/Database/Poco/Data/Statement.h
+../config/config.h
+/home/maksim/Myfolder/Magistr/Service/11/Serv1/src/config/config.h
+
+/home/maksim/Myfolder/Magistr/Service/11/Serv1/src/Database/person.h
+string
+-
+vector
+-
+Poco/JSON/Object.h
+-
+Poco/Data/MySQL/Connector.h
+-
+Poco/Data/MySQL/MySQLException.h
+-
+Poco/Data/SessionFactory.h
+-
+
+/home/maksim/Myfolder/Magistr/Service/11/Serv1/src/config/config.h
+string
+-
+
+/home/maksim/Myfolder/Magistr/Service/11/Serv1/src/debug/debug.h
+
