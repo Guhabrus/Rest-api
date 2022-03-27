@@ -16,6 +16,10 @@
 #define MAX_AGE         254     ///< максимальный возраст
 #define MIN_AGE         18      ///< минимальный возраст
 
+#define LOGIN           "login"
+#define FIRST_NAME      "first_name"
+#define LAST_NAME       "last_name"
+#define AGE_PERSON      "age"
 
 namespace database
 {
@@ -36,11 +40,11 @@ namespace database
         public:
             Person(){}
 
-            Person(std::string login, std::string first_name, std::string second_name,uint8_t age)
+            Person(std::string login, std::string first_name, std::string last_name,uint8_t age)
             {
                 this->login = login;
                 this->first_name = first_name;
-                this->second_name=second_name;
+                this->last_name=last_name;
                 this->age = age;
             }        
 
@@ -57,7 +61,7 @@ namespace database
 
             std::string get_login()      {return login;}
             std::string get_first_name() {return first_name;}
-            std::string get_second_name(){return second_name;}
+            std::string get_last_name(){return last_name;}
             uint8_t     get_age()        {return age;}
 
             /**
@@ -81,14 +85,14 @@ namespace database
             Result set_first_name(std::string first_name);
 
             /**
-             * @brief Set the second_name object
+             * @brief Set the last_name object
              * 
-             * @param second_name фамилия товарища
+             * @param last_name фамилия товарища
              * @return Result - результат записи 0- успешно, 1 - слишком длинное имя, 
              * 2 - слишком корроткое имя
              * 3 - содержит недопустимые символы
              */
-            Result set_second_name(std::string second_name);
+            Result set_last_name(std::string last_name);
 
             /**
              * @brief Set the age object
@@ -106,7 +110,7 @@ namespace database
                 ex.set_age(22);
                 ex.set_first_name("maks");
                 ex.set_login("guhab");
-                ex.set_second_name("kukushkin");
+                ex.set_last_name("kukushkin");
                 return ex;
             }
 
@@ -127,6 +131,17 @@ namespace database
 
 
             /**
+             * @brief Поиск персонажей по мени и фамилии (last_name)
+             * 
+             * @param first_name  - Имя по которому будет осуществляться поиск
+             * @param last_name  - Фамилия по которому будет осуществляться поиск
+             * @param last_name  - Список найденных клиентов
+             * @return код ошибки: 0 - успешно, остальное не очень
+             */
+            static uint8_t find_by_first_and_last_name(std::string first_name, std::string last_name, std::vector<Person> *list_clients);
+
+
+            /**
              * @brief забрать все объекты из базы данных
              * 
              * @param list_person указатель на список объектов в которые будут положенны все клиенты
@@ -141,7 +156,7 @@ namespace database
             
             std::string login;                                          
             std::string first_name;
-            std::string second_name;
+            std::string last_name;
             uint8_t age;
 
     };

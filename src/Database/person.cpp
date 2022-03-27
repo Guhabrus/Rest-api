@@ -13,7 +13,7 @@ namespace database
         Poco::JSON::Object::Ptr json_objct = new Poco::JSON::Object();
         json_objct->set("login",this->login);
         json_objct->set("first name",this->first_name);
-        json_objct->set("second name",this->second_name);
+        json_objct->set("last name",this->last_name);
         json_objct->set("age",this->age);
 
         return json_objct;
@@ -39,20 +39,20 @@ namespace database
     }
 
 
-    Result Person::set_second_name(std::string second_name)
+    Result Person::set_last_name(std::string last_name)
     {
-        if(MAX_SIZE_STR < second_name.length())
+        if(MAX_SIZE_STR < last_name.length())
             return TOO_LONG;
 
-        else if(MIN_SIZE_STR > second_name.length())
+        else if(MIN_SIZE_STR > last_name.length())
             return TOO_SHORT;
 
-        else if((second_name.find("@") != std::string::npos) || (second_name.find("!") != std::string::npos)  || \
-            (second_name.find("#") != std::string::npos) || (second_name.find("%") != std::string::npos) ||       \
-            (second_name.find("$") != std::string::npos))
+        else if((last_name.find("@") != std::string::npos) || (last_name.find("!") != std::string::npos)  || \
+            (last_name.find("#") != std::string::npos) || (last_name.find("%") != std::string::npos) ||       \
+            (last_name.find("$") != std::string::npos))
             return INCORRECT;
 
-        this->second_name = second_name;
+        this->last_name = last_name;
 
         return SUCCES;
     }
@@ -118,10 +118,10 @@ namespace database
 
             print_debug("start writtin\n");
 
-            msg<< "INSERT INTO " TABLE_NAME" (login, first_name, second_name, age) VALUES(?, ?, ?, ?)",    
+            msg<< "INSERT INTO " TABLE_NAME " ( " LOGIN " , " FIRST_NAME " , " LAST_NAME " , " AGE_PERSON " ) VALUES(?, ?, ?, ?)",    
             PUT_TO_DATABASE(login),
             PUT_TO_DATABASE(first_name),
-            PUT_TO_DATABASE(second_name),
+            PUT_TO_DATABASE(last_name),
             PUT_TO_DATABASE(age);
 
             msg.execute();
@@ -142,9 +142,10 @@ namespace database
 
     Person Person::find_by_login(std::string login_f)
     {
-        Person find_person;
+        
         try
         {
+            Person find_person;
             print_debug("start connection\n");
             Poco::Data::Session session = database::Database::get().create_session();
             
@@ -152,11 +153,11 @@ namespace database
             
             print_debug("start finding\n");
             
-            msg<<"SELECT login, first_name, second_name, age FROM " TABLE_NAME " where login=?",
+            msg<<"SELECT " LOGIN " , " FIRST_NAME " , " LAST_NAME " , " AGE_PERSON " FROM " TABLE_NAME " where " LOGIN "=?",
     
                 GET_FROM_DATABASE(find_person.login),
                 GET_FROM_DATABASE(find_person.first_name),
-                GET_FROM_DATABASE(find_person.second_name),
+                GET_FROM_DATABASE(find_person.last_name),
                 GET_FROM_DATABASE(find_person.age),
                 PUT_TO_DATABASE(login_f);
                 OPTION_RESEARCH(0,1);
@@ -166,10 +167,55 @@ namespace database
         }
         catch (...)
         {
+            print_debug("test test \n");
             throw;
         }
         
+    }
+
+    uint8_t Person::find_by_first_and_last_name(std::string first_name, std::string last_name, std::vector<Person> *list_clients)
+    {
+        try
+        {
+            Person find_person;
+            
+            print_debug("start connection\n");
+            Poco::Data::Session session = database::Database::get().create_session();
+            
+            Poco::Data::Statement msg(session);
+            
+            print_debug("start finding\n");
+
+            
+            msg<<"SELECT " LOGIN " , "  FIRST_NAME " , " LAST_NAME " , " AGE_PERSON " FROM " TABLE_NAME " where " FIRST_NAME " LIKE ? and " LAST_NAME " LIKE ?", 
         
+                GET_FROM_DATABASE(find_person.login),
+                GET_FROM_DATABASE(find_person.first_name),
+                GET_FROM_DATABASE(find_person.last_name),
+                GET_FROM_DATABASE(find_person.age),
+                PUT_TO_DATABASE(first_name),
+                PUT_TO_DATABASE(last_name),
+                OPTION_RESEARCH(0,1);
+            
+            
+            
+            
+            while (!msg.done())
+            {
+                if(msg.execute())
+                    list_clients->push_back(find_person);
+            }
+
+            print_debug(" Все ок, что то нашли \n");
+            return 0;
+            
+        }
+        catch(...)
+        {
+            print_debug("УПС что то пошло не так при поиcке ... \n");
+            throw;
+        }
+        return 1;
         
     }
 
@@ -193,10 +239,10 @@ namespace database
             print_debug("start finding\n");
             
 
-            msg<<"SELECT login, first_name, second_name, age FROM " TABLE_NAME,
+            msg<<"SELECT " LOGIN " , " FIRST_NAME " , " LAST_NAME " , " AGE_PERSON " FROM " TABLE_NAME,
                 GET_FROM_DATABASE(tmp_man.login),
                 GET_FROM_DATABASE(tmp_man.first_name),
-                GET_FROM_DATABASE(tmp_man.second_name),
+                GET_FROM_DATABASE(tmp_man.last_name),
                 GET_FROM_DATABASE(tmp_man.age),
                 OPTION_RESEARCH(0,1);
                 
