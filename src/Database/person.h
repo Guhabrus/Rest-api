@@ -1,3 +1,6 @@
+#ifndef PERSON_H
+#define PERSON_H
+
 #include <string>
 #include <vector>
 
@@ -5,6 +8,9 @@
 #include <Poco/Data/MySQL/Connector.h>
 #include <Poco/Data/MySQL/MySQLException.h>
 #include <Poco/Data/SessionFactory.h>
+
+#include <boost/thread/thread.hpp>
+#include <boost/thread/mutex.hpp>
 
 
 #define PUT_TO_DATABASE(ARGV)     Poco::Data::Keywords::use(ARGV)              ///< Записать в БД
@@ -20,6 +26,11 @@
 #define FIRST_NAME      "first_name"
 #define LAST_NAME       "last_name"
 #define AGE_PERSON      "age"
+
+
+  
+
+
 
 namespace database
 {
@@ -131,22 +142,32 @@ namespace database
 
 
             /**
-             * @brief Поиск персонажей по мени и фамилии (last_name)
+             * @brief Функция парралельного запроса к БД по каждому шарду
              * 
              * @param first_name  - Имя по которому будет осуществляться поиск
              * @param last_name  - Фамилия по которому будет осуществляться поиск
              * @param last_name  - Список найденных клиентов
              * @return код ошибки: 0 - успешно, остальное не очень
              */
-            static uint8_t find_by_first_and_last_name(std::string first_name, std::string last_name, std::vector<Person> *list_clients);
+            static uint8_t get_all_prl(std::string first_name, std::string last_name, std::vector<Person> *list_clients);
 
+
+            /**
+             * @brief Функция запроса к БД для поиска по имени и фамилии
+             * @param first_name  - Имя по которому будет осуществляться поиск
+             * @param last_name  - Фамилия по которому будет осуществляться поиск
+             * @param last_name  - Список найденных клиентов
+             * @param mtx_list    - Мютекс во избежания ахтунге (передача его в функцию в качетсве параметра временный костыль)
+             * @param num_shard   - норме шарда для поиска
+             */
+            static void request_all(std::string first_name, std::string last_name, std::vector<Person> *list_clients,boost::mutex *mtx_list, std::string num_shard);
 
             /**
              * @brief забрать все объекты из базы данных
              * 
              * @param list_person указатель на список объектов в которые будут положенны все клиенты
              */
-            static void get_all_database(std::vector<Person> *list_person);
+            static void get_all_prl_database(std::vector<Person> *list_person);
 
 
 
@@ -163,8 +184,8 @@ namespace database
 
 
 
-
-
+    
+    typedef std::string num_shard;
 
     /**
      * @brief класс для соединения с mysql (каюсь реализацию взял у вас)
@@ -173,12 +194,28 @@ namespace database
     class Database{
         private:
             std::string _connection_string;
+            uint8_t total_size_shard = 3;
             Database();
         public:
             static Database& get();
             Poco::Data::Session create_session();
+
+
+ 
+
+            /**
+             * @brief Get the num shard object
+             * @return номер шарда по которому будет запись, так как нужно сделать равномерное распредление использую
+             * rand с предварительный вызовом srand для заданяи действительно рандомных чисел
+             */
+            static num_shard get_num_shard(std::string login);
+
+
     };
 
 }
 
+
+
+#endif
 

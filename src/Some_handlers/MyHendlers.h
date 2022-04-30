@@ -1,3 +1,7 @@
+#ifndef MYHENDLER_H
+#define MYHENDLER_H
+
+
 #include "Poco/Net/HTTPRequestHandlerFactory.h"
 #include "Poco/Net/HTTPServerRequest.h"
 #include "Poco/Net/HTTPRequestHandler.h"
@@ -5,6 +9,7 @@
 #include "Poco/Net/HTTPServerResponse.h"
 #include "Poco/Net/HTMLForm.h"
 #include "Poco/JSON/Stringifier.h"
+#include "Poco/Data/Statement.h"
 
 #include <iostream>
 
@@ -65,6 +70,8 @@ class HTTPbestHandFact: public Poco::Net::HTTPRequestHandlerFactory
 };
 
 
+
+#endif
 
 
 

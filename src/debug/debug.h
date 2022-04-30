@@ -1,3 +1,5 @@
+#ifndef DEBUG_H
+#define DEBUG_H
 
 
 //#define PRINT_DEBUG
@@ -8,5 +10,9 @@
 
 #else
     #define print_debug(...) do{}while(0)
+
+#endif
+
+
 
 #endif

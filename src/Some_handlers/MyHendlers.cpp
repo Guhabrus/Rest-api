@@ -15,7 +15,7 @@ void RequestHendler::handleRequest(Poco::Net::HTTPServerRequest &req, Poco::Net:
     resp.setContentType("application/json");
 
     std::ostream& out = resp.send();
-
+    
     if(html_request.has("add"))
     {
         
@@ -99,7 +99,7 @@ void RequestHendler::handleRequest(Poco::Net::HTTPServerRequest &req, Poco::Net:
 
                     std::vector<database::Person> *list_clients  = new std::vector<database::Person>;
 
-                    if(database::Person::find_by_first_and_last_name(first_name_request, last_name_request, list_clients))
+                    if(database::Person::get_all_prl(first_name_request, last_name_request, list_clients))
                     {
                         out<<"<h1> Упс что то пошло не так при поиске <h1>";
                     }
@@ -110,7 +110,7 @@ void RequestHendler::handleRequest(Poco::Net::HTTPServerRequest &req, Poco::Net:
                     {
                         json_client_list.add(list_clients->back().converte_to_json());
                         list_clients->pop_back();
-                        print_debug("1.\n");
+                        
                     }
                     Poco::JSON::Stringifier::stringify(json_client_list, out);
                     delete list_clients;
@@ -135,7 +135,7 @@ void RequestHendler::handleRequest(Poco::Net::HTTPServerRequest &req, Poco::Net:
     }
     else if(html_request.has("login"))              
     {
-
+        // print_debug(" ----------------> GET 3.0 %s \n", req.getMethod());
         print_debug("Ищем человек по логину \n");
         try
         {
