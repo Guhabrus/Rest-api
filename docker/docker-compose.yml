@@ -1,61 +1,28 @@
-version: '3'
-
+version: '3.3'
 services:
-  mysql-db-node-1:
-    build:
-      context: mysql
-      dockerfile: Dockerfile
-    container_name: mysql-db-node-1
-    command: --default-authentication-plugin=mysql_native_password
-    restart: unless-stopped
-    environment:
-      MYSQL_DATABASE: best_server
-      MYSQL_USER: sqluser
-      MYSQL_PASSWORD: Kukusale8691!
-      MYSQL_ROOT_PASSWORD: '1'
-    ports:
-      - 3360:3306
+    ignite-node-1:
+        image: applem1support/ignite:2.12.0
+        container_name: ignite-node-1
+        ports:
+            - "10800:10800"
 
+    ignite-node-2:
+        image: applem1support/ignite:2.12.0
+        container_name: ignite-node-2
+        ports:
+            - "10900:10800"
 
-  mysql-db-node-2:
-    build:
-      context: mysql
-      dockerfile: Dockerfile
-    container_name: mysql-db-node-2
-    command: --default-authentication-plugin=mysql_native_password
-    restart: unless-stopped
-    environment:
-      MYSQL_DATABASE: best_server
-      MYSQL_USER: sqluser
-      MYSQL_PASSWORD: Kukusale8691!
-      MYSQL_ROOT_PASSWORD: '1'
-    ports:
-      - 3361:3306
-
-
-  mysql-db-node-3:
-    build:
-      context: mysql
-      dockerfile: Dockerfile
-    container_name: mysql-db-node-3
-    command: --default-authentication-plugin=mysql_native_password
-    restart: unless-stopped
-    environment:
-      MYSQL_DATABASE: best_server
-      MYSQL_USER: sqluser
-      MYSQL_PASSWORD: Kukusale8691!
-      MYSQL_ROOT_PASSWORD: '1'
-    ports:
-      - 3362:3306
-      
-  proxysql:
-    build:
-      context: proxysql
-      dockerfile: Dockerfile
-    container_name: proxysql
-    depends_on:
-      - "mysql-db-node-1"
-      - "mysql-db-node-2"
-      - "mysql-db-node-3"
-    ports:
-      - "6033:6033"
+    mysql:
+        build: 
+            context: mysql
+            dockerfile: Dockerfile
+        container_name: mysql
+        command: --default-authentication-plugin=mysql_native_password
+        restart: always
+        environment:
+            MYSQL_ROOT_PASSWORD: 'Kukusale8691!'
+            MYSQL_DATABASE: 'best_server'
+            MYSQL_USER: 'sqluser'
+            MYSQL_PASSWORD: 'Kukusale8691!'
+        ports:
+            - 3306:3306

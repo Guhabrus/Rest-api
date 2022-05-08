@@ -1,3 +1,5 @@
+use best_server;
+
 CREATE TABLE Person(
   login varchar(255) NOT NULL,
   first_name varchar(255) NOT NULL,

@@ -1,7 +1,3 @@
-#ifndef MYHENDLER_H
-#define MYHENDLER_H
-
-
 #include "Poco/Net/HTTPRequestHandlerFactory.h"
 #include "Poco/Net/HTTPServerRequest.h"
 #include "Poco/Net/HTTPRequestHandler.h"
@@ -9,14 +5,18 @@
 #include "Poco/Net/HTTPServerResponse.h"
 #include "Poco/Net/HTMLForm.h"
 #include "Poco/JSON/Stringifier.h"
-#include "Poco/Data/Statement.h"
 
 #include <iostream>
 
-#include "../Database/person.h"
+#include "../Database/Person/person.h"
 #include "../debug/debug.h"
 
-
+enum Metod
+{
+    GET,
+    POST,
+    UNKNOWN
+};
 
 /**
  * @brief Класс обработчик запросов
@@ -35,7 +35,12 @@ class RequestHendler:public Poco::Net::HTTPRequestHandler
          */
         virtual void handleRequest(Poco::Net::HTTPServerRequest &req, Poco::Net::HTTPServerResponse &resp);
 
-
+        /**
+         * @brief функция получения класса метода
+         * @param metod_s
+         * @return Metod тип метода запроса
+         */
+        Metod classMetod(const  std::string metod_s);
 
     private:
         
@@ -70,8 +75,6 @@ class HTTPbestHandFact: public Poco::Net::HTTPRequestHandlerFactory
 };
 
 
-
-#endif
 
 
 

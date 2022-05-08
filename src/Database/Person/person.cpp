@@ -1,10 +1,17 @@
 #include "person.h"
 #include "string.h"
-#include "../debug/debug.h"
-#include "Poco/Data/Statement.h"
-#include "../config/config.h"
+#include "../../debug/debug.h"
+#include "../../config/config.h"
 
-#include <cstdio>
+
+#include "Poco/Data/Statement.h"
+#include <ignite/thin/cache/cache_peek_mode.h>
+
+#include <Poco/JSON/Parser.h>
+#include <Poco/Dynamic/Var.h>
+
+
+
 
 
 namespace database
@@ -13,10 +20,10 @@ namespace database
     {
         Poco::JSON::Object::Ptr json_objct = new Poco::JSON::Object();
         json_objct->set("login",this->login);
-        json_objct->set("first name",this->first_name);
-        json_objct->set("last name",this->last_name);
+        json_objct->set("first_name",this->first_name);
+        json_objct->set("last_name",this->last_name);
         json_objct->set("age",this->age);
-
+        
         return json_objct;
     }
 
@@ -93,7 +100,7 @@ namespace database
 
    void Person::init_connetc_to_database()
     {
-       try  
+       try
        {
            Poco::Data::Session session = database::Database::get().create_session();
 
@@ -106,9 +113,6 @@ namespace database
        }   
     }
 
-
-  
-
     uint8_t Person::save_to_database()
     {
         
@@ -119,16 +123,10 @@ namespace database
             Poco::Data::Session session = database::Database::get().create_session();
             
             Poco::Data::Statement msg(session);
-            
-            std::string str_docker = "INSERT INTO " TABLE_NAME " ( " LOGIN " , " FIRST_NAME " , " LAST_NAME " , " AGE_PERSON " ) VALUES(?, ?, ?, ?)";
-            
-
-            str_docker += "-- sharding:" + Database::get_num_shard(login);
-            
 
             print_debug("start writtin\n");
 
-            msg<<str_docker,
+            msg<< "INSERT INTO " TABLE_NAME " ( " LOGIN " , " FIRST_NAME " , " LAST_NAME " , " AGE_PERSON " ) VALUES(?, ?, ?, ?)",    
             PUT_TO_DATABASE(login),
             PUT_TO_DATABASE(first_name),
             PUT_TO_DATABASE(last_name),
@@ -136,22 +134,18 @@ namespace database
 
             msg.execute();
 
-            print_debug("1\n");
+            // Poco::Data::Statement select(session);
             return Result::SUCCES;
             
         }
         catch(const std::exception& e)
         {
-            print_debug("2\n");
             std::cerr << e.what() << '\n';
             throw;
-            
+            return Result::UNKNOWN;
         }
         
     }
-
-
-  
 
 
     Person Person::find_by_login(std::string login_f)
@@ -167,19 +161,16 @@ namespace database
             
             print_debug("start finding\n");
             
-            std::string str_docker = "SELECT " LOGIN " , " FIRST_NAME " , " LAST_NAME " , " AGE_PERSON " FROM " TABLE_NAME " where " LOGIN "=?";
-
-            str_docker+=str_docker += "-- sharding:" + Database::get_num_shard(login_f);
-
-
-            msg<<str_docker,
+            msg<<"SELECT " LOGIN " , " FIRST_NAME " , " LAST_NAME " , " AGE_PERSON " FROM " TABLE_NAME " where " LOGIN "=?",
+    
                 GET_FROM_DATABASE(find_person.login),
                 GET_FROM_DATABASE(find_person.first_name),
                 GET_FROM_DATABASE(find_person.last_name),
                 GET_FROM_DATABASE(find_person.age),
                 PUT_TO_DATABASE(login_f);
                 OPTION_RESEARCH(0,1);
-            msg.execute();
+                
+            if(!msg.execute()){throw std::logic_error("Not found");};
 
             return find_person;
         }
@@ -191,67 +182,39 @@ namespace database
         
     }
 
-    void Person::request_all(std::string first_name, std::string last_name, std::vector<Person> *list_clients, boost::mutex *mtx_list, std::string num_shard)
-    {
-        Person find_person;
-            
-        print_debug("start connection\n");
-        Poco::Data::Session session = database::Database::get().create_session();
-        
-        Poco::Data::Statement msg(session);
-        
-        print_debug("start finding\n");
-
-        std::string str_docker = "SELECT " LOGIN " , "  FIRST_NAME " , " LAST_NAME " , " AGE_PERSON " FROM " TABLE_NAME " where " FIRST_NAME " LIKE ? and " LAST_NAME " LIKE ?";
-        
-        str_docker += ("-- sharding:" + num_shard);
-
-        msg<<str_docker,
-    
-            GET_FROM_DATABASE(find_person.login),
-            GET_FROM_DATABASE(find_person.first_name),
-            GET_FROM_DATABASE(find_person.last_name),
-            GET_FROM_DATABASE(find_person.age),
-            PUT_TO_DATABASE(first_name),
-            PUT_TO_DATABASE(last_name),
-            OPTION_RESEARCH(0,1);
-        
-        
-        
-        
-        while (!msg.done())
-        {
-            if(msg.execute())
-            {
-                boost::lock_guard<boost::mutex> lock(*mtx_list);        list_clients->push_back(find_person);
-            }
-                
-        }
-    }
-
-    uint8_t Person::get_all_prl(std::string first_name, std::string last_name, std::vector<Person> *list_clients)
+    uint8_t Person::find_by_first_and_last_name(std::string first_name, std::string last_name, std::vector<Person> *list_clients)
     {
         try
         {
-            boost::mutex mtx_list;
+            Person find_person;
             
-
-            std::vector<boost::thread> thread_list;
-            for(size_t indx_shard = 0; indx_shard<TOTAL_SHARD; indx_shard++)
-            {
-                thread_list.push_back(boost::thread(request_all, first_name, last_name,list_clients,&mtx_list, std::to_string(indx_shard) ) );
-            }
+            print_debug("start connection\n");
+            Poco::Data::Session session = database::Database::get().create_session();
             
+            Poco::Data::Statement msg(session);
+            
+            print_debug("start finding\n");
 
-            for(size_t indx_shard = 0; indx_shard<TOTAL_SHARD; indx_shard++)
+            
+            msg<<"SELECT " LOGIN " , "  FIRST_NAME " , " LAST_NAME " , " AGE_PERSON " FROM " TABLE_NAME " where " FIRST_NAME " LIKE ? and " LAST_NAME " LIKE ?", 
+        
+                GET_FROM_DATABASE(find_person.login),
+                GET_FROM_DATABASE(find_person.first_name),
+                GET_FROM_DATABASE(find_person.last_name),
+                GET_FROM_DATABASE(find_person.age),
+                PUT_TO_DATABASE(first_name),
+                PUT_TO_DATABASE(last_name),
+                OPTION_RESEARCH(0,1);
+            
+            
+            
+            
+            while (!msg.done())
             {
-                if(thread_list.back().joinable())
-                {
-                    thread_list.back().join();
-                    thread_list.pop_back();
-                }
-                
+                if(msg.execute())
+                    list_clients->push_back(find_person);
             }
+
             print_debug(" Все ок, что то нашли \n");
             return 0;
             
@@ -269,7 +232,7 @@ namespace database
 
 
 
-    void Person::get_all_prl_database(std::vector<Person> *list_person)
+    void Person::get_all_database(std::vector<Person> *list_person)
     {
 
 
@@ -301,7 +264,7 @@ namespace database
                 
                     
             }
-       
+            print_debug("6\n");
         }
         catch(const std::exception& e)
         {
@@ -315,16 +278,70 @@ namespace database
         return;
     }
 
-
-
-
-
-
-
-    Database::Database()
+    void Person::from_str(const std::string person_str, Person *man)
     {
-        // // srand(1);
+        Poco::JSON::Parser parser;
+        Poco::Dynamic::Var result = parser.parse(person_str);
+        Poco::JSON::Object::Ptr object = result.extract<Poco::JSON::Object::Ptr>();
 
+        man->login       = object->getValue<std::string>(LOGIN);
+        man->first_name  = object->getValue<std::string>(FIRST_NAME);
+        man->last_name   = object->getValue<std::string>(LAST_NAME);
+        man->age         = object->getValue<uint8_t>(AGE_PERSON);
+        //TODO добавить try
+
+        return ;
+    }
+
+
+    void Person::save_to_cache()
+    {
+        std::stringstream ss;
+        Poco::JSON::Stringifier::stringify(converte_to_json(), ss);
+        std::string person_s = ss.str();
+        database::Cache::get().put(login, person_s);
+
+    }
+
+
+
+
+
+    bool Person::get_from_cache(const id_cache_t id_cache, Person *man)
+    {
+        try
+        {
+            std::string result;     result.clear();
+            database::Cache::get().get_p(id_cache, result);
+
+            if( !result.empty())
+            {
+                print_debug("get from cache result = %s\n", result.c_str());
+                from_str(result, man);
+                print_debug("берем из кеша\n");
+                return true;
+            }
+            else 
+            {
+                print_debug(" ничего не найдено в кеше\n");
+            }
+
+        }
+        catch(const std::exception& e)
+        {
+            std::cerr << e.what() << '\n';
+        }
+        return false;
+    }
+
+
+
+
+
+
+
+
+    Database::Database(){
         _connection_string+="host=";
         _connection_string+=HOST_IP ;
 
@@ -340,8 +357,6 @@ namespace database
         _connection_string+=";password=";
         _connection_string+=PASSWORD_SQL;
         
-      
-    
        
         Poco::Data::MySQL::Connector::registerConnector();
     }
@@ -357,15 +372,5 @@ namespace database
         
         return Poco::Data::Session(Poco::Data::SessionFactory::instance().create(Poco::Data::MySQL::Connector::KEY, _connection_string));
     }
-
-
-
-
-    num_shard Database::get_num_shard(std::string login)
-    {
-        
-       return std::to_string(std::hash<std::string>{} (login) %TOTAL_SHARD); 
-    }
-
 }
 
