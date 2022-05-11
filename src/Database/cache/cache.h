@@ -10,6 +10,8 @@
 #include "../../debug/debug.h"
 #include "../../config/config.h"
 
+#ifdef CACHE
+
 typedef std::string id_cache_t;
 
 namespace database
@@ -47,5 +49,6 @@ namespace database
     };
 }
 
+#endif
 
 #endif

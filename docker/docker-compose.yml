@@ -1,17 +1,24 @@
 version: '3.3'
 services:
-    ignite-node-1:
-        image: applem1support/ignite:2.12.0
-        container_name: ignite-node-1
-        ports:
-            - "10800:10800"
+    zookeeper:
+        image: zookeeper
+        container_name: zookeeper
+        environment:
+            ZOOKEEPER_CLIENT_PORT: 2181
+            ZOOKEEPER_TICK_TIME: 2000
+            ZOOKEEPER_INIT_LIMIT: 5
 
-    ignite-node-2:
-        image: applem1support/ignite:2.12.0
-        container_name: ignite-node-2
+    kafka-node-1:
+        image: wurstmeister/kafka
+        container_name: kafka-node-1
         ports:
-            - "10900:10800"
-
+            - "2181:2181"
+            - "9092:9092"
+        environment:
+            KAFKA_ADVERTISED_HOST_NAME: localhost
+            KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+            ADVERTISED_PORT: 9092
+            ADVERTISED_HOST_NAME: localhost
     mysql:
         build: 
             context: mysql

@@ -1,0 +1,1 @@
+sudo ./build/consumer --read=127.0.0.1 --write=127.0.0.1 --port=3306 --login=sqluser --password=Kukusale8691! --database=best_server --queue=127.0.0.1:9092 --topic=event_server --group_id=0

@@ -1,0 +1,42 @@
+[
+{
+  "directory": "/home/maksim/Myfolder/Magistr/Service/Service-architecture/build",
+  "command": "/usr/bin/g++  -DBOOST_ALL_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_PROGRAM_OPTIONS_DYN_LINK -DBOOST_REGEX_DYN_LINK -DBOOST_SYSTEM_DYN_LINK -DPOCO_ENABLE_CPP11 -DPOCO_ENABLE_CPP14 -DPOCO_HAVE_FD_EPOLL -DPOCO_OS_FAMILY_UNIX -DXML_DTD -D_DEBUG -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_REENTRANT -D_THREAD_SAFE -D_XOPEN_SOURCE=500 -I/home/maksim/Myfolder/Magistr/Service/Service-architecture/build  -g   -Wall -Wextra -pedantic -Werror -std=gnu++17 -o CMakeFiles/consumer.dir/src/kafka/consumer_main.cpp.o -c /home/maksim/Myfolder/Magistr/Service/Service-architecture/src/kafka/consumer_main.cpp",
+  "file": "/home/maksim/Myfolder/Magistr/Service/Service-architecture/src/kafka/consumer_main.cpp"
+},
+{
+  "directory": "/home/maksim/Myfolder/Magistr/Service/Service-architecture/build",
+  "command": "/usr/bin/g++  -DBOOST_ALL_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_PROGRAM_OPTIONS_DYN_LINK -DBOOST_REGEX_DYN_LINK -DBOOST_SYSTEM_DYN_LINK -DPOCO_ENABLE_CPP11 -DPOCO_ENABLE_CPP14 -DPOCO_HAVE_FD_EPOLL -DPOCO_OS_FAMILY_UNIX -DXML_DTD -D_DEBUG -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_REENTRANT -D_THREAD_SAFE -D_XOPEN_SOURCE=500 -I/home/maksim/Myfolder/Magistr/Service/Service-architecture/build  -g   -Wall -Wextra -pedantic -Werror -std=gnu++17 -o CMakeFiles/consumer.dir/src/kafka/kafka_q.cpp.o -c /home/maksim/Myfolder/Magistr/Service/Service-architecture/src/kafka/kafka_q.cpp",
+  "file": "/home/maksim/Myfolder/Magistr/Service/Service-architecture/src/kafka/kafka_q.cpp"
+},
+{
+  "directory": "/home/maksim/Myfolder/Magistr/Service/Service-architecture/build",
+  "command": "/usr/bin/g++  -DBOOST_ALL_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_PROGRAM_OPTIONS_DYN_LINK -DBOOST_REGEX_DYN_LINK -DBOOST_SYSTEM_DYN_LINK -DPOCO_ENABLE_CPP11 -DPOCO_ENABLE_CPP14 -DPOCO_HAVE_FD_EPOLL -DPOCO_OS_FAMILY_UNIX -DXML_DTD -D_DEBUG -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_REENTRANT -D_THREAD_SAFE -D_XOPEN_SOURCE=500 -I/home/maksim/Myfolder/Magistr/Service/Service-architecture/build  -g   -Wall -Wextra -pedantic -Werror -std=gnu++17 -o CMakeFiles/consumer.dir/src/Database/Person/person.cpp.o -c /home/maksim/Myfolder/Magistr/Service/Service-architecture/src/Database/Person/person.cpp",
+  "file": "/home/maksim/Myfolder/Magistr/Service/Service-architecture/src/Database/Person/person.cpp"
+},
+{
+  "directory": "/home/maksim/Myfolder/Magistr/Service/Service-architecture/build",
+  "command": "/usr/bin/g++  -DBOOST_ALL_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_PROGRAM_OPTIONS_DYN_LINK -DBOOST_REGEX_DYN_LINK -DBOOST_SYSTEM_DYN_LINK -DPOCO_ENABLE_CPP11 -DPOCO_ENABLE_CPP14 -DPOCO_HAVE_FD_EPOLL -DPOCO_OS_FAMILY_UNIX -DXML_DTD -D_DEBUG -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_REENTRANT -D_THREAD_SAFE -D_XOPEN_SOURCE=500 -I/home/maksim/Myfolder/Magistr/Service/Service-architecture/build  -g   -Wall -Wextra -pedantic -Werror -std=gnu++14 -o CMakeFiles/event_server.dir/src/main.cpp.o -c /home/maksim/Myfolder/Magistr/Service/Service-architecture/src/main.cpp",
+  "file": "/home/maksim/Myfolder/Magistr/Service/Service-architecture/src/main.cpp"
+},
+{
+  "directory": "/home/maksim/Myfolder/Magistr/Service/Service-architecture/build",
+  "command": "/usr/bin/g++  -DBOOST_ALL_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_PROGRAM_OPTIONS_DYN_LINK -DBOOST_REGEX_DYN_LINK -DBOOST_SYSTEM_DYN_LINK -DPOCO_ENABLE_CPP11 -DPOCO_ENABLE_CPP14 -DPOCO_HAVE_FD_EPOLL -DPOCO_OS_FAMILY_UNIX -DXML_DTD -D_DEBUG -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_REENTRANT -D_THREAD_SAFE -D_XOPEN_SOURCE=500 -I/home/maksim/Myfolder/Magistr/Service/Service-architecture/build  -g   -Wall -Wextra -pedantic -Werror -std=gnu++14 -o CMakeFiles/event_server.dir/src/Server/web_server.cpp.o -c /home/maksim/Myfolder/Magistr/Service/Service-architecture/src/Server/web_server.cpp",
+  "file": "/home/maksim/Myfolder/Magistr/Service/Service-architecture/src/Server/web_server.cpp"
+},
+{
+  "directory": "/home/maksim/Myfolder/Magistr/Service/Service-architecture/build",
+  "command": "/usr/bin/g++  -DBOOST_ALL_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_PROGRAM_OPTIONS_DYN_LINK -DBOOST_REGEX_DYN_LINK -DBOOST_SYSTEM_DYN_LINK -DPOCO_ENABLE_CPP11 -DPOCO_ENABLE_CPP14 -DPOCO_HAVE_FD_EPOLL -DPOCO_OS_FAMILY_UNIX -DXML_DTD -D_DEBUG -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_REENTRANT -D_THREAD_SAFE -D_XOPEN_SOURCE=500 -I/home/maksim/Myfolder/Magistr/Service/Service-architecture/build  -g   -Wall -Wextra -pedantic -Werror -std=gnu++14 -o CMakeFiles/event_server.dir/src/Some_handlers/MyHendlers.cpp.o -c /home/maksim/Myfolder/Magistr/Service/Service-architecture/src/Some_handlers/MyHendlers.cpp",
+  "file": "/home/maksim/Myfolder/Magistr/Service/Service-architecture/src/Some_handlers/MyHendlers.cpp"
+},
+{
+  "directory": "/home/maksim/Myfolder/Magistr/Service/Service-architecture/build",
+  "command": "/usr/bin/g++  -DBOOST_ALL_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_PROGRAM_OPTIONS_DYN_LINK -DBOOST_REGEX_DYN_LINK -DBOOST_SYSTEM_DYN_LINK -DPOCO_ENABLE_CPP11 -DPOCO_ENABLE_CPP14 -DPOCO_HAVE_FD_EPOLL -DPOCO_OS_FAMILY_UNIX -DXML_DTD -D_DEBUG -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_REENTRANT -D_THREAD_SAFE -D_XOPEN_SOURCE=500 -I/home/maksim/Myfolder/Magistr/Service/Service-architecture/build  -g   -Wall -Wextra -pedantic -Werror -std=gnu++14 -o CMakeFiles/event_server.dir/src/Database/Person/person.cpp.o -c /home/maksim/Myfolder/Magistr/Service/Service-architecture/src/Database/Person/person.cpp",
+  "file": "/home/maksim/Myfolder/Magistr/Service/Service-architecture/src/Database/Person/person.cpp"
+},
+{
+  "directory": "/home/maksim/Myfolder/Magistr/Service/Service-architecture/build",
+  "command": "/usr/bin/g++  -DBOOST_ALL_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_PROGRAM_OPTIONS_DYN_LINK -DBOOST_REGEX_DYN_LINK -DBOOST_SYSTEM_DYN_LINK -DPOCO_ENABLE_CPP11 -DPOCO_ENABLE_CPP14 -DPOCO_HAVE_FD_EPOLL -DPOCO_OS_FAMILY_UNIX -DXML_DTD -D_DEBUG -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_REENTRANT -D_THREAD_SAFE -D_XOPEN_SOURCE=500 -I/home/maksim/Myfolder/Magistr/Service/Service-architecture/build  -g   -Wall -Wextra -pedantic -Werror -std=gnu++14 -o CMakeFiles/event_server.dir/src/Database/cache/cache.cpp.o -c /home/maksim/Myfolder/Magistr/Service/Service-architecture/src/Database/cache/cache.cpp",
+  "file": "/home/maksim/Myfolder/Magistr/Service/Service-architecture/src/Database/cache/cache.cpp"
+}
+]

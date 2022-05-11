@@ -26,7 +26,6 @@ void RequestHendler::handleRequest(Poco::Net::HTTPServerRequest &req, Poco::Net:
 
     std::ostream& out = resp.send();
     
-    print_debug("Method = %s\n", req.getMethod().c_str());
     switch (classMetod(req.getMethod()))
     {
 
@@ -66,13 +65,29 @@ void RequestHendler::handleRequest(Poco::Net::HTTPServerRequest &req, Poco::Net:
 
                 print_debug(" login =%s  first_name = %sm last_name = %s, age = %d\n",man.get_login().c_str(),man.get_first_name().c_str(),man.get_last_name().c_str(),man.get_age());
                 
-                uint8_t retcode =  man.save_to_database();
-                man.save_to_cache();
-                
-                if(!retcode)
-                    out<<"<h1> SUCCES <h1>";
-                else 
-                    out<<"<h1> error -  <h1>"<<retcode;
+
+                #ifdef KAFKA
+                    if(man.send_kafka())
+                        out<<"<h1> SUCCES <h1>";
+                    else 
+                        out<<"<h1> ERROR <h1>";
+                        
+                #else
+                    uint8_t retcode = man.save_to_database();
+                    if(!retcode)
+                        out<<"<h1> SUCCES <h1>";
+                    else 
+                        out<<"<h1> error <h1>"<<retcode;
+
+                #endif
+
+                #ifdef CACHE
+
+                    man.save_to_cache();
+
+                #endif
+
+              
 
                 print_debug("Succes\n");
             }
@@ -98,7 +113,7 @@ void RequestHendler::handleRequest(Poco::Net::HTTPServerRequest &req, Poco::Net:
 
                             std::vector<database::Person> *list_clients  = new std::vector<database::Person>;
 
-                            if(database::Person::find_by_first_and_last_name(first_name_request, last_name_request, list_clients))
+                            if(database::Person::find_person(first_name_request, last_name_request, list_clients))
                             {
                                 out<<"<h1> Упс что то пошло не так при поиске <h1>";
                             }
@@ -145,13 +160,19 @@ void RequestHendler::handleRequest(Poco::Net::HTTPServerRequest &req, Poco::Net:
 
                     database::Person man; 
 
-                    if( !database::Person::get_from_cache(login_request, &man))
-                    {
+
+                    #ifdef CACHE
+
+                        if( !database::Person::get_from_cache(login_request, &man))
+                        {
+                            man = database::Person::find_by_login(login_request);
+                            man.save_to_cache();
+                            print_debug("берем из БД, записываем в кеш\n");
+                        }
+                    #else
                         man = database::Person::find_by_login(login_request);
-                        man.save_to_cache();
-                        print_debug("берем из БД, записываем в кеш\n");
-                    }
                     
+                    #endif
                     
                     Poco::JSON::Stringifier::stringify(man.converte_to_json(),out);
                     
@@ -161,15 +182,11 @@ void RequestHendler::handleRequest(Poco::Net::HTTPServerRequest &req, Poco::Net:
                     
                     out<<"<h1> Do not find ((((( <h1>";    
                 }
-        
-
-    }
-
-
+            }
         break; 
 
-    default:
-        out<<"<h1> Товарищ, какой то странный запрос, мы такое не обрабатываем  <h1>";
+        default:
+            out<<"<h1> Товарищ, какой то странный запрос, мы такое не обрабатываем  <h1>";
         break;
     }
 

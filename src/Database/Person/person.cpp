@@ -1,7 +1,7 @@
 #include "person.h"
 #include "string.h"
 #include "../../debug/debug.h"
-#include "../../config/config.h"
+
 
 
 #include "Poco/Data/Statement.h"
@@ -9,8 +9,10 @@
 
 #include <Poco/JSON/Parser.h>
 #include <Poco/Dynamic/Var.h>
+#include <cppkafka/cppkafka.h>
 
-
+#include <boost/thread/mutex.hpp>
+#include <boost/thread/thread.hpp>
 
 
 
@@ -113,7 +115,7 @@ namespace database
        }   
     }
 
-    uint8_t Person::save_to_database()
+    bool Person::save_to_database()
     {
         
 
@@ -135,14 +137,14 @@ namespace database
             msg.execute();
 
             // Poco::Data::Statement select(session);
-            return Result::SUCCES;
+            return true;
             
         }
         catch(const std::exception& e)
         {
             std::cerr << e.what() << '\n';
             throw;
-            return Result::UNKNOWN;
+            return false;
         }
         
     }
@@ -182,7 +184,7 @@ namespace database
         
     }
 
-    uint8_t Person::find_by_first_and_last_name(std::string first_name, std::string last_name, std::vector<Person> *list_clients)
+    uint8_t Person::find_person(std::string first_name, std::string last_name, std::vector<Person> *list_clients)
     {
         try
         {
@@ -278,22 +280,30 @@ namespace database
         return;
     }
 
-    void Person::from_str(const std::string person_str, Person *man)
+    bool Person::from_str(const std::string person_str, Person *man)
     {
-        Poco::JSON::Parser parser;
-        Poco::Dynamic::Var result = parser.parse(person_str);
-        Poco::JSON::Object::Ptr object = result.extract<Poco::JSON::Object::Ptr>();
+        try
+        {
+            Poco::JSON::Parser parser;
+            Poco::Dynamic::Var result = parser.parse(person_str);
+            Poco::JSON::Object::Ptr object = result.extract<Poco::JSON::Object::Ptr>();
 
-        man->login       = object->getValue<std::string>(LOGIN);
-        man->first_name  = object->getValue<std::string>(FIRST_NAME);
-        man->last_name   = object->getValue<std::string>(LAST_NAME);
-        man->age         = object->getValue<uint8_t>(AGE_PERSON);
-        //TODO добавить try
-
-        return ;
+            man->login       = object->getValue<std::string>(LOGIN);
+            man->first_name  = object->getValue<std::string>(FIRST_NAME);
+            man->last_name   = object->getValue<std::string>(LAST_NAME);
+            man->age         = object->getValue<uint8_t>(AGE_PERSON);
+            return true;
+        }
+        catch(const std::exception& e)
+        {
+            std::cerr << e.what() << '\n';
+            return false;
+        }
+    
     }
 
-
+#ifdef CAHCE
+   
     void Person::save_to_cache()
     {
         std::stringstream ss;
@@ -302,10 +312,6 @@ namespace database
         database::Cache::get().put(login, person_s);
 
     }
-
-
-
-
 
     bool Person::get_from_cache(const id_cache_t id_cache, Person *man)
     {
@@ -334,9 +340,59 @@ namespace database
         return false;
     }
 
+#endif
 
 
 
+#ifdef KAFKA
+
+    bool Person::send_kafka()
+    {
+        try
+        {
+            cppkafka::Configuration config = {{"metadata.broker.list", KAFKA_HOST}};
+
+            static cppkafka::Producer producer(config);
+
+            std::stringstream str_strm;
+
+            Poco::JSON::Stringifier::stringify(converte_to_json(), str_strm);
+            std::string kafka_msg = str_strm.str();
+
+            static boost::mutex mtx_sig;
+            boost::lock_guard<boost::mutex> lock(mtx_sig);
+            bool send_flag = true;
+            
+            while(send_flag)
+            {
+                try
+                {
+                    producer.produce(cppkafka::MessageBuilder(NAME_PROC).partition(0).payload(kafka_msg ) );
+                    send_flag = false;
+                    print_debug("отправили в кафку\n");
+                }
+                catch(...)
+                {
+                    print_debug("не получилось отправить\n");
+                }
+                
+                
+            }
+            
+
+            return true;
+        }
+        catch(const std::exception& e)
+        {
+            std::cerr << e.what() << '\n';
+            
+        }
+        return false;
+       
+        
+
+    }
+#endif
 
 
 

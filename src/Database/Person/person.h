@@ -6,6 +6,7 @@
 #include <Poco/Data/MySQL/MySQLException.h>
 #include <Poco/Data/SessionFactory.h>
 #include "../cache/cache.h"
+#include "../../config/config.h"
 
 #define PUT_TO_DATABASE(ARGV)     Poco::Data::Keywords::use(ARGV)              ///< Записать в БД
 #define GET_FROM_DATABASE(ARGV)   Poco::Data::Keywords::into(ARGV)             ///< Взять из БД 
@@ -33,6 +34,8 @@ namespace database
         INCORRECT,          ///< некоректное
         UNKNOWN             ///< неизвестаня ошибка
     };
+
+  
 
     class Person
     {
@@ -117,9 +120,10 @@ namespace database
            /**
             * @brief сохраняет данные в базу данных (пока она void поток сделать возврат кода результата)
             * 
-            * @return uint8_t код ошибки
+            * @return true  - если операция прошла успешна
+            * @return false  - если что то пошло не так
             */
-            uint8_t save_to_database();
+            bool save_to_database();
 
             /**
              * @brief функция поиска обхекта по логину
@@ -138,7 +142,7 @@ namespace database
              * @param last_name  - Список найденных клиентов
              * @return код ошибки: 0 - успешно, остальное не очень
              */
-            static uint8_t find_by_first_and_last_name(std::string first_name, std::string last_name, std::vector<Person> *list_clients);
+            static uint8_t find_person(std::string first_name, std::string last_name, std::vector<Person> *list_clients);
 
 
             /**
@@ -149,6 +153,18 @@ namespace database
             static void get_all_database(std::vector<Person> *list_person);
 
 
+            /**
+             * @brief Функция вычлененяи сущности person из строки (из кеша)
+             * 
+             * @param person_str  - сущность person в виде строки
+             * @param man  - сущность person в которую присвояться значение
+             * @return true  - если операция прошла успешна
+             * @return false  - если что то пошло не так
+             */
+            
+            static bool from_str(const std::string person_str, Person *man);
+
+#ifdef CACHE
             /**
              * @brief Функция записи в кеш сущности person
              * 
@@ -166,14 +182,20 @@ namespace database
             static bool get_from_cache(const id_cache_t id_cache, Person *man);
 
 
-            /**
-             * @brief Функция вычлененяи сущности person из строки (из кеша)
-             * 
-             * @param person_str  - сущность person в виде строки
-             * @param man  - сущность person в которую присвояться значение
-             */
-            static void from_str(const std::string person_str, Person *man);
+           
+#endif
 
+#ifdef KAFKA
+
+            /**
+             * @brief функция отправки в очередь сообщений
+             * 
+             * @return true -  запись успешка
+             * @return false - запись не удалась 
+             */
+            bool send_kafka();
+
+#endif
 
             void init_connetc_to_database();
 

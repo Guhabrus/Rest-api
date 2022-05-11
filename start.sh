@@ -1,1 +1,1 @@
-sudo ./build/SERV1
+sudo ./build/event_server

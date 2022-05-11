@@ -1,6 +1,10 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+
+//#define CACHE
+#define KAFKA
+
 #include <string>
 
 
@@ -10,7 +14,18 @@
 #define PASSWORD_SQL    "Kukusale8691!"    ///< Пароль к proxysql
 #define PORT            "3306"             ///< Порт подключения к proxysql
 #define HOST_IP         "127.0.0.1"        ///< Локальный IP
-#define KEY_CAHCE       "127.0.0.1:10800,127.0.0.1:10900"  ///< 
+#define NAME_PROC       "event_server"
+
+
+#ifdef CACHE
+    #define KEY_CAHCE       "127.0.0.1:10800,127.0.0.1:10900"  ///< 
+#endif
+
+#ifdef KAFKA
+    #define KAFKA_HOST       "127.0.0.1:9092"
+#endif
+
+
 
 class  Config{
     private:

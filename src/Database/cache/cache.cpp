@@ -4,6 +4,7 @@
 #include <ignite/thin/ignite_client_configuration.h>
 
 
+#ifdef CACHE
 
 static ignite::thin::IgniteClient _client;
 static ignite::thin::cache::CacheClient<id_cache_t, std::string> _cache;
@@ -64,3 +65,5 @@ namespace database
     }
 
 }
+
+#endif

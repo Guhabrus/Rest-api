@@ -1,0 +1,4 @@
+/home/maksim/Myfolder/Magistr/Service/Service-architecture/build/CMakeFiles/rebuild_cache.dir
+/home/maksim/Myfolder/Magistr/Service/Service-architecture/build/CMakeFiles/edit_cache.dir
+/home/maksim/Myfolder/Magistr/Service/Service-architecture/build/CMakeFiles/consumer.dir
+/home/maksim/Myfolder/Magistr/Service/Service-architecture/build/CMakeFiles/event_server.dir
